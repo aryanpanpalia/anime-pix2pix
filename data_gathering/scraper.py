@@ -3,7 +3,6 @@ import io
 import os
 import re
 import sys
-import warnings
 
 import requests
 from PIL import Image
@@ -88,6 +87,7 @@ def get_image_links(page_number, hair_color_tag):
             browser.get(image_link_page)
             page_html = browser.page_source
             soup = BeautifulSoup(page_html, features='html.parser')
+            browser.quit()
 
             image_link_line = str(soup.find(target="_blank"))
             image_link = image_link_line[9:image_link_line.find("\" target")]
@@ -164,7 +164,7 @@ def main(start_page, end_page, img_dir='images'):
 
 if __name__ == '__main__':
     START_PAGE = 0
-    END_PAGE = 2
+    END_PAGE = 30
     IMG_DIR = 'images'
 
     os.mkdir(f'./{IMG_DIR}')
