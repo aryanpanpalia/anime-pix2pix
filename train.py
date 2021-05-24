@@ -140,7 +140,4 @@ def train(
                         f"saved_model_paths/{model_name}_{cur_step}.pth"
                     )
 
-                    if cur_step >= 8000:
-                        return
-
             cur_step += 1
