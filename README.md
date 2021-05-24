@@ -5,6 +5,8 @@ The dataset is obtained from https://www.animecharactersdatabase.com using the p
 
 ![image](https://github.com/aryanpanpalia/anime-pix2pix/blob/main/examples/data/image.png)
 
+The image above is an example of an image in the dataset. The first half is the normal face and the second half is the face after being ran through the Canny edge detector.
+
 ## Training
 To train the model from the dataset, run `main.py.` If saved models already exist in the saved_model_paths directory, it will load them up and resume training on them.
 
