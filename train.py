@@ -48,7 +48,7 @@ def train(
     val_dataloader = DataLoader(val_dataset, batch_size=batch_size)
 
     # applies a horizontal flip on an image
-    flip = torch.jit.script(torch.nn.Sequential(transforms.RandomHorizontalFlip(p=1)))
+    flip = torch.jit.script(torch.nn.Sequential(transforms.RandomHorizontalFlip()))
 
     mean_generator_loss = 0
     mean_discriminator_loss = 0
@@ -60,9 +60,8 @@ def train(
             real = image[:, :, :, :256].to(device)
 
             # 50% chance of flipping the the images horizontally
-            if random.random() > 0.5:
-                real = flip(real)
-                condition = flip(condition)
+            real = flip(real)
+            condition = flip(condition)
 
             # Update discriminator
             disc_opt.zero_grad()
@@ -92,16 +91,18 @@ def train(
             if cur_step % display_step == 0:
                 print()
                 mean_val_loss = 0
+                val_condition = None
+                val_real = None
                 for val_image, _ in tqdm(val_dataloader, file=sys.stdout, position=0, leave=True):
-                    condition = val_image[:, :, :, 256:].to(device)
-                    real = val_image[:, :, :, :256].to(device)
+                    val_condition = val_image[:, :, :, 256:].to(device)
+                    val_real = val_image[:, :, :, :256].to(device)
 
                     with torch.no_grad():
                         gen_loss = get_gen_loss(
                             gen,
                             disc,
-                            real,
-                            condition,
+                            val_real,
+                            val_condition,
                             adv_criterion,
                             recon_criterion,
                             lambda_recon,
@@ -117,9 +118,9 @@ def train(
 
                 # Log with tensorboard
                 with torch.no_grad():
-                    fake = gen(condition)
-                    img_grid_real = torchvision.utils.make_grid(real, normalize=True)
-                    img_grid_condition = torchvision.utils.make_grid(condition, normalize=True)
+                    fake = gen(val_condition)
+                    img_grid_real = torchvision.utils.make_grid(val_real, normalize=True)
+                    img_grid_condition = torchvision.utils.make_grid(val_condition, normalize=True)
                     img_grid_fake = torchvision.utils.make_grid(fake, normalize=True)
 
                     writer_real.add_image("Real", img_grid_real, global_step=cur_step)

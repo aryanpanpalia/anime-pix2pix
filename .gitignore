@@ -124,8 +124,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# Ignore data
+# Ignore data and saved models
 *.png
+*.pth
 
 # Ignore testing
 testing.py

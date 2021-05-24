@@ -28,7 +28,7 @@ DISC_LR = 0.0002
 LAMBDA_RECON = 99
 
 NUM_EPOCHS = 75
-BATCH_SIZE = 4
+BATCH_SIZE = 24
 HIDDEN_CHANNELS = 32
 
 DISPLAY_STEP = 500
@@ -43,11 +43,13 @@ TRANSFORM = transforms.Compose([
 def main(path_to_dataset, model_name):
     # finds the latest saved path if it exists
     try:
-        saved_model_paths = [path for path in os.listdir() if model_name in path]
+        saved_model_paths = [path for path in os.listdir('saved_model_paths') if model_name in path]
         saved_model_path = sorted(saved_model_paths)[-1]
         pretrained = True
         cur_step = int(saved_model_path[saved_model_path.find('_') + 1:-4])
-    except IndexError:
+        saved_model_path = f'saved_model_paths/{saved_model_path}'
+        print(f'Loading from {saved_model_path}')
+    except (IndexError, FileNotFoundError):
         pretrained = False
         saved_model_path = None
         cur_step = 0
