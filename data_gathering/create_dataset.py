@@ -49,12 +49,15 @@ if __name__ == '__main__':
     os.mkdir(DATASET_DIR_PATH)
 
     for hair_color in ['black', 'blonde', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red']:
-        os.mkdir(f'{DATASET_DIR_PATH}/{hair_color}')
+        os.mkdir(f'{DATASET_DIR_PATH}/{hair_color}_hair')
+        os.mkdir(f'{DATASET_DIR_PATH}/{hair_color}_hair/{hair_color}')
 
         image_names = os.listdir(f'{IMAGE_DIR_PATH}/{hair_color}')
 
         in_filenames = [f'{IMAGE_DIR_PATH}/{hair_color}/{image_name}' for image_name in image_names]
-        out_filenames = [f'{DATASET_DIR_PATH}/{hair_color}/{image_name[0:-4]}' for image_name in image_names]
+        out_filenames = [
+            f'{DATASET_DIR_PATH}/{hair_color}_hair/{hair_color}/{image_name[0:-4]}' for image_name in image_names
+        ]
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
             list(
