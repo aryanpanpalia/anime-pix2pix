@@ -127,6 +127,7 @@ dmypy.json
 # Ignore data and saved models
 dataset/
 saved_model_paths/
+images/
 
 # Ignore testing
 testing.py

@@ -21,10 +21,13 @@ def download_image_from(link, directory, name):
     :param link: link to image
     :param name: name to save image to
     """
-    img_content = requests.get(link).content
-    image_file = io.BytesIO(img_content)
-    image = Image.open(image_file).convert('RGB')
-    image.save(f'./{directory}/{name}.png', 'PNG', quality=100, subsampling=0)
+    try:
+        img_content = requests.get(link).content
+        image_file = io.BytesIO(img_content)
+        image = Image.open(image_file).convert('RGB')
+        image.save(f'./{directory}/{name}.png', 'PNG', quality=100, subsampling=0)
+    except:
+        pass
 
 
 def get_image_links(page_number, hair_color_tag):
@@ -61,40 +64,40 @@ def get_image_links(page_number, hair_color_tag):
     character_id_lines = soup.find_all(target="_blank")
 
     image_links = []
+    try:
+        # go to the characters on the page's specific page
+        for character_id_line in character_id_lines:
+            character_id_line = str(character_id_line)
+            character_id = character_id_line[27:character_id_line.find("\" target")]
+            character_url = f'https://www.animecharactersdatabase.com/characters.php?id={character_id}'
 
-    # go to the characters on the page's specific page
-    for character_id_line in character_id_lines:
-        character_id_line = str(character_id_line)
-        character_id = character_id_line[27:character_id_line.find("\" target")]
-        character_url = f'https://www.animecharactersdatabase.com/characters.php?id={character_id}'
-
-        browser.get(character_url)
-        page_html = browser.page_source
-        soup = BeautifulSoup(page_html, features='html.parser')
-
-        og_image_line = str(soup.find(property='og:image'))
-        og_image_link = og_image_line[15:og_image_line.find("\" property")]
-        image_links.append(og_image_link)
-
-        line = str(soup.find_all(id="tile1"))
-
-        image_ids = re.findall('imgid=(.*?)\">', line)
-
-        # get all the extra images
-        for image_id in image_ids:
-            image_link_page = f'https://www.animecharactersdatabase.com/photo.php?type_id=1&imgid={image_id}'
-
-            browser.get(image_link_page)
+            browser.get(character_url)
             page_html = browser.page_source
             soup = BeautifulSoup(page_html, features='html.parser')
-            browser.quit()
 
-            image_link_line = str(soup.find(target="_blank"))
-            image_link = image_link_line[9:image_link_line.find("\" target")]
+            og_image_line = str(soup.find(property='og:image'))
+            og_image_link = og_image_line[15:og_image_line.find("\" property")]
+            image_links.append(og_image_link)
 
-            image_links.append(image_link)
+            line = str(soup.find_all(id="tile1"))
 
-    return image_links
+            image_ids = re.findall('imgid=(.*?)\">', line)
+
+            # get all the extra images
+            for image_id in image_ids:
+                image_link_page = f'https://www.animecharactersdatabase.com/photo.php?type_id=1&imgid={image_id}'
+
+                browser.get(image_link_page)
+                page_html = browser.page_source
+                soup = BeautifulSoup(page_html, features='html.parser')
+
+                image_link_line = str(soup.find(target="_blank"))
+                image_link = image_link_line[9:image_link_line.find("\" target")]
+
+                image_links.append(image_link)
+    finally:
+        browser.quit()
+        return image_links
 
 
 def download_images_from_these_tags(start_page, end_page, hair_color, hair_color_tag, img_dir):
@@ -164,7 +167,7 @@ def main(start_page, end_page, img_dir='images'):
 
 if __name__ == '__main__':
     START_PAGE = 0
-    END_PAGE = 30
+    END_PAGE = 16
     IMG_DIR = 'images'
 
     os.mkdir(f'./{IMG_DIR}')

@@ -1,16 +1,10 @@
 import concurrent.futures
 import os
 import sys
-import warnings
 
 import cv2
 import numpy as np
 from tqdm import tqdm
-
-warnings.filterwarnings(
-    'ignore',
-    message='libpng warning: iCCP: known incorrect sRGB profile'
-)
 
 
 def detect(filename, outname):
