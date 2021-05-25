@@ -48,7 +48,7 @@ def train(
     val_dataloader = DataLoader(val_dataset, batch_size=batch_size)
 
     # applies a horizontal flip on an image
-    flip = torch.jit.script(torch.nn.Sequential(transforms.RandomHorizontalFlip()))
+    flip = torch.jit.script(torch.nn.Sequential(transforms.RandomHorizontalFlip(p=1)))
 
     mean_generator_loss = 0
     mean_discriminator_loss = 0
@@ -59,10 +59,11 @@ def train(
             condition = image[:, :, :, 256:].to(device)
             real = image[:, :, :, :256].to(device)
 
-            # 50% chance of flipping the the images horizontally
-            real = flip(real)
-            condition = flip(condition)
-
+            # 50% chance of flipping the the images horizontally. Either both must be flipped or both must be normal.
+            if random.random() > 0.5:
+                real = flip(real)
+                condition = flip(condition)
+                
             # Update discriminator
             disc_opt.zero_grad()
             disc_loss = get_disc_loss(gen, disc, real, condition, adv_criterion)
