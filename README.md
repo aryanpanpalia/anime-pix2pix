@@ -16,7 +16,7 @@ The dataset is obtained from https://www.animecharactersdatabase.com using the p
 The image above is an example of an image in the dataset. The first half is the normal face and the second half is the face after being ran through the Canny edge detector.
 
 ## Training
-It is recommended to use an NVIDIA GPU to train the model, however, if one is not available it will automatically train on CPU. To train the model from the dataset, run `main.py.` If saved models already exist in `saved_model_paths/`, it will load them up and resume training on them. Each hair color is trained and saved separately. The model is saved every 2000 steps to `saved_model_paths/.` 
+It is recommended to use an NVIDIA GPU to train the model, however, if one is not available it will automatically train on CPU. To train the model from the dataset, run `main.py.` If saved models already exist in `saved_model_paths/`, it will load them up and resume training on them. Each hair color is trained and saved separately. The model is saved every 2000 steps to `saved_model_paths/.` The following is a link to the final model paths I had after training: https://mega.nz/folder/bJxkmSxI#qhTo7ELXU3xrCCY2qJBWcQ.
 
 ## Results
 The results/logs while training can be seen in the log directory using tensorboard. To see the logs, make sure to have tensorboard installed and go into the project directory and run `tensorboard --logdir logs.` The logs are made using the validation data. Some results for orange hair after 8000 steps are below.
