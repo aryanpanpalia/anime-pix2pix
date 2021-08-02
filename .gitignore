@@ -125,11 +125,9 @@ dmypy.json
 .pyre/
 
 # Ignore data and saved models
-#dataset/
 *_0.png
 *_1.png
 *_2.png
-*_3.png
 saved_model_paths/
 images/
 
